@@ -1,51 +1,8 @@
-mod models {
-    use chrono::NaiveDateTime;
-    use serde::{Deserialize, Serialize};
+mod controllers;
+mod handlers;
+mod models;
 
-    #[derive(Serialize, sqlx::Type)]
-    pub struct Caja {
-        pub id: i64,
-        pub descripcion: Option<String>,
-        pub activa: Option<bool>,
-        pub sucursal_id: i64,
-        pub desde: NaiveDateTime,
-        pub hasta: NaiveDateTime,
-        pub created_at: NaiveDateTime,
-        pub updated_at: NaiveDateTime,
-    }
-}
-
-mod handlers {
-    use crate::models::Caja;
-    use sqlx::{query, query_as, PgPool};
-    use tide::{prelude, Error};
-
-    pub async fn list(db_pool: &PgPool) -> tide::Result<Vec<Caja>> {
-        let rows = sqlx::query_as!(
-            Caja,
-            "Select id, descripcion, activa, sucursal_id, desde, hasta, created_at, updated_at from cajas"
-        )
-        .fetch_all(db_pool)
-        .await
-        .map_err(|e| Error::new(409, e))?;
-        Ok(rows)
-    }
-}
-
-mod controllers {
-    use crate::handlers::list;
-    use tide::{Body, Request, Response};
-
-    pub async fn controller_list(req: Request<super::State>) -> tide::Result {
-        let db_pool = req.state().db_pool.clone();
-        let rows = list(&db_pool).await?;
-        let mut res = Response::new(200);
-        res.set_body(Body::from_json(&rows)?);
-        Ok(res)
-    }
-}
-
-use crate::controllers::controller_list;
+use controllers::caja::controller_list;
 use sqlx::PgPool;
 use sqlx::Pool;
 use tide::http::cookies::SameSite;
