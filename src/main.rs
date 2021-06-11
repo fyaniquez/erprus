@@ -1,8 +1,9 @@
 mod controllers;
 mod handlers;
 mod models;
+mod views;
 
-use controllers::caja::controller_list;
+use controllers::caja::ctrl_caja_list;
 use sqlx::PgPool;
 use sqlx::Pool;
 use tide::http::cookies::SameSite;
@@ -56,7 +57,7 @@ async fn server(db_pool: PgPool) -> Server<State> {
     );
 
     // api
-    app.at("/cajas").get(controller_list);
+    app.at("/erprus/cajas").get(ctrl_caja_list);
 
     app
 }
