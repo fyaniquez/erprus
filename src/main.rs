@@ -3,12 +3,13 @@ mod handlers;
 mod models;
 mod views;
 
-use controllers::caja::ctrl_caja_list;
+use controllers::caja::*;
 use sqlx::PgPool;
 use sqlx::Pool;
 use tide::http::cookies::SameSite;
 use tide::prelude::*;
 use tide::Server;
+use views::caja::*;
 
 #[derive(Clone, Debug)]
 pub struct State {
@@ -56,8 +57,20 @@ async fn server(db_pool: PgPool) -> Server<State> {
         .with_same_site_policy(SameSite::Lax),
     );
 
+    // statics
+    app.at("/public")
+        .serve_dir("./public/")
+        .expect("Error en directorio estático");
+
     // api
-    app.at("/erprus/cajas").get(ctrl_caja_list);
+    app.at("/erprus/caja/crear").post(ctrl_crear);
+    app.at("/erprus/caja/:id").post(ctrl_modificar);
+    app.at("/erprus/caja/:id/delete").get(ctrl_delete);
+    // views
+    app.at("/erprus/cajas").get(ctrl_listar);
+    app.at("/erprus/caja/nuevo").get(view_nuevo);
+    app.at("/erprus/caja/:id/editar").get(view_editar);
+    //app.at("/erprus/caja/:id/ver").get(view_ver);
 
     app
 }
