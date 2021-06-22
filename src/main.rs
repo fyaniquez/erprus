@@ -63,14 +63,14 @@ async fn server(db_pool: PgPool) -> Server<State> {
         .expect("Error en directorio estático");
 
     // api
-    app.at("/erprus/caja/crear").post(ctrl_crear);
-    app.at("/erprus/caja/:id").post(ctrl_modificar);
+    app.at("/erprus/caja/crear").post(ctrl_create);
+    app.at("/erprus/caja/:id").post(ctrl_update);
     app.at("/erprus/caja/:id/delete").get(ctrl_delete);
     // views
-    app.at("/erprus/cajas").get(ctrl_listar);
-    app.at("/erprus/caja/nuevo").get(view_nuevo);
-    app.at("/erprus/caja/:id/editar").get(view_editar);
-    //app.at("/erprus/caja/:id/ver").get(view_ver);
+    app.at("/erprus/cajas").get(ctrl_list);
+    app.at("/erprus/caja/:id").get(ctrl_get);
+    app.at("/erprus/caja/nuevo").get(view_new);
+    app.at("/erprus/caja/:id/editar").get(view_edit);
 
     app
 }

@@ -1,5 +1,5 @@
-//use crate::handlers::hndl_hallar;
-use crate::handlers::caja::hndl_hallar;
+//use crate::handlers::hndl_get;
+use crate::handlers::caja::hndl_get;
 use crate::models::caja::Caja;
 use crate::views::layout::page;
 use maud::html;
@@ -7,11 +7,11 @@ use sqlx::PgPool;
 use tide::http::mime;
 use tide::{Body, Request, Response};
 
-pub async fn view_listar(title: &str, rows: Vec<Caja>) -> tide::Result {
+pub async fn view_list(rows: Vec<Caja>) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let i = rows.into_iter();
     let markup = page(
-        title,
+        "Lista cajas",
         html! {
             table {
                 tr {
@@ -40,7 +40,7 @@ pub async fn view_listar(title: &str, rows: Vec<Caja>) -> tide::Result {
                             }
                         }
                         td {
-                            a href={"/erprus/caja/" (row.id.to_string()) "/ver"} {
+                            a href={"/erprus/caja/" (row.id.to_string())} {
                                 "Ver"
                             }
                         }
@@ -54,14 +54,14 @@ pub async fn view_listar(title: &str, rows: Vec<Caja>) -> tide::Result {
     res.set_body(b);
     Ok(res)
 }
-pub async fn view_ver(req: Request<crate::State>, row: Caja) -> tide::Result {
+pub async fn view_show(req: Request<crate::State>, row: Caja) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let markup = page("Mostrar Caja", ver(row));
     res.set_body(Body::from_string(markup.into_string()));
     Ok(res)
 }
 
-pub async fn view_nuevo(req: Request<crate::State>) -> tide::Result {
+pub async fn view_new(req: Request<crate::State>) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let markup = page(
         "Nueva caja",
@@ -71,11 +71,11 @@ pub async fn view_nuevo(req: Request<crate::State>) -> tide::Result {
     Ok(res)
 }
 
-pub async fn view_editar(req: Request<crate::State>) -> tide::Result {
+pub async fn view_edit(req: Request<crate::State>) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let db_pool: PgPool = req.state().db_pool.clone();
     let id: i64 = (req.param("id").unwrap_or("0")).parse::<i64>().unwrap_or(0);
-    let caja: Caja = hndl_hallar(&db_pool, id).await.unwrap().unwrap();
+    let caja: Caja = hndl_get(&db_pool, id).await.unwrap().unwrap();
     let markup = page(
         "Editar caja",
         formulario("post", format!("/erprus/caja/{}", id), caja),
