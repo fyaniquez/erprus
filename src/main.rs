@@ -1,15 +1,23 @@
+use sqlx::{PgPool, Pool};
+use tide::http::mime;
+use tide::utils;
+use tide::{
+    http::cookies::SameSite, prelude::*, Middleware, Next, Request, Response, Server, StatusCode,
+};
+
 mod controllers;
 mod handlers;
 mod models;
 mod views;
 
-use controllers::caja::*;
-use sqlx::PgPool;
-use sqlx::Pool;
-use tide::http::cookies::SameSite;
-use tide::prelude::*;
-use tide::Server;
-use views::caja::*;
+use controllers::caja;
+use controllers::cajero;
+use controllers::capitulo;
+use controllers::categoria;
+use controllers::empleado;
+use controllers::marca;
+use controllers::producto;
+use controllers::unidad;
 
 #[derive(Clone, Debug)]
 pub struct State {
@@ -44,18 +52,15 @@ pub async fn make_db_pool(db_url: &str) -> PgPool {
 
 async fn server(db_pool: PgPool) -> Server<State> {
     let state = State { db_pool };
-
     let mut app = tide::with_state(state);
 
-    app.with(
-        tide::sessions::SessionMiddleware::new(
-            tide::sessions::MemoryStore::new(),
-            std::env::var("TIDE_SECRET")
-                .expect("Please provide a TIDE_SECRET value of at least 32 bytes")
-                .as_bytes(),
-        )
-        .with_same_site_policy(SameSite::Lax),
-    );
+    app.at("/public/js")
+        .with(utils::After(|mut res: Response| async move {
+            res.set_content_type(mime::JAVASCRIPT);
+            Ok(res)
+        }))
+        .serve_dir("./public/js")
+        .expect("Error en directorio estático");
 
     // statics
     app.at("/public")
@@ -63,14 +68,73 @@ async fn server(db_pool: PgPool) -> Server<State> {
         .expect("Error en directorio estático");
 
     // api
-    app.at("/erprus/caja/crear").post(ctrl_create);
-    app.at("/erprus/caja/:id").post(ctrl_update);
-    app.at("/erprus/caja/:id/delete").get(ctrl_delete);
-    // views
-    app.at("/erprus/cajas").get(ctrl_list);
-    app.at("/erprus/caja/:id").get(ctrl_get);
-    app.at("/erprus/caja/nuevo").get(view_new);
-    app.at("/erprus/caja/:id/editar").get(view_edit);
+    app.at("/erprus/cajas").post(caja::ctrl_create);
+    app.at("/erprus/cajas/:id").post(caja::ctrl_update);
+    app.at("/erprus/cajas/:id").delete(caja::ctrl_delete);
+    app.at("/erprus/cajas").get(caja::ctrl_list);
+    app.at("/erprus/cajas/:id").get(caja::ctrl_get);
+    app.at("/erprus/cajas/new").get(caja::ctrl_new);
+    app.at("/erprus/cajas/:id/edit").get(caja::ctrl_edit);
 
+    app.at("/erprus/cajeros/crear").post(cajero::ctrl_create);
+    app.at("/erprus/cajeros/:id").post(cajero::ctrl_update);
+    app.at("/erprus/cajeros/:id/delete")
+        .get(cajero::ctrl_delete);
+    app.at("/erprus/cajeros").get(cajero::ctrl_list);
+    app.at("/erprus/cajeros/:id").get(cajero::ctrl_get);
+    app.at("/erprus/cajeros/nuevo").get(cajero::ctrl_new);
+    app.at("/erprus/cajeros/:id/editar").get(cajero::ctrl_edit);
+
+    app.at("/erprus/empleados/crear")
+        .post(empleado::ctrl_create);
+    app.at("/erprus/empleados/:id").post(empleado::ctrl_update);
+    app.at("/erprus/empleados/:id/delete")
+        .get(empleado::ctrl_delete);
+    app.at("/erprus/empleados").get(empleado::ctrl_list);
+    app.at("/erprus/empleados/:id").get(empleado::ctrl_get);
+    app.at("/erprus/empleados/nuevo").get(empleado::ctrl_new);
+    app.at("/erprus/empleados/:id/editar")
+        .get(empleado::ctrl_edit);
+
+    app.at("/erprus/productos").post(producto::ctrl_create);
+    app.at("/erprus/productos/:id").post(producto::ctrl_update);
+    app.at("/erprus/productos/:id")
+        .delete(producto::ctrl_delete);
+    app.at("/erprus/productos").get(producto::ctrl_list);
+    app.at("/erprus/productos/:id").get(producto::ctrl_get);
+    app.at("/erprus/productos/new").get(producto::ctrl_new);
+    app.at("/erprus/productos/:id/edit")
+        .get(producto::ctrl_edit);
+
+    app.at("/erprus/capitulos").post(capitulo::ctrl_create);
+    app.at("/erprus/capitulos/:id").post(capitulo::ctrl_update);
+    app.at("/erprus/capitulos/:id")
+        .delete(capitulo::ctrl_delete);
+    app.at("/erprus/capitulos").get(capitulo::ctrl_list);
+    app.at("/erprus/capitulos/:id").get(capitulo::ctrl_get);
+    app.at("/erprus/capitulos/new").get(capitulo::ctrl_new);
+    app.at("/erprus/capitulos/:id/edit")
+        .get(capitulo::ctrl_edit);
+    app.at("/erprus/capitulos_nombres.json")
+        .get(capitulo::ctrl_list_nombres_json);
+
+    app.at("/erprus/categorias").post(categoria::ctrl_create);
+    app.at("/erprus/categorias/:id")
+        .post(categoria::ctrl_update);
+    app.at("/erprus/categorias/:id")
+        .delete(categoria::ctrl_delete);
+    app.at("/erprus/categorias").get(categoria::ctrl_list);
+    app.at("/erprus/categorias/:id").get(categoria::ctrl_get);
+    app.at("/erprus/categorias/new").get(categoria::ctrl_new);
+    app.at("/erprus/categorias/:id/edit")
+        .get(categoria::ctrl_edit);
+    app.at("/erprus/capitulos/:id/categorias_nombres.json")
+        .get(categoria::ctrl_list_nombres_json);
+
+    app.at("/erprus/categorias/:id/marcas_nombres.json")
+        .get(marca::ctrl_list_nombres_json);
+
+    app.at("/erprus/unidades_nombres.json")
+        .get(unidad::ctrl_list_nombres_json);
     app
 }

@@ -1,57 +1,115 @@
 body {
-    color: #333;
-    margin: 5px;
-    font: 1.2em / 1.2 Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
 }
 
-div.cabecera {
-    padding: 20px 0px 20px 0px;
-    margin: 0 auto;
+body * {
+    font: normal 0.75rem Verdana, Arial, sans-serif;
 }
 
-ul.ingreso {
-    float: right;
+h1 {
+    color: #ffffff;
+    font-weight: bolder;
+    margin: 0;
+    padding: 0 20px 0 20px;
+}
+
+h2 {
+    color: sienna;
+    font-weight: bold;
+    text-align: left;
+    display: inline-block;
+}
+
+/* cabecera */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    height: auto;
+    margin: 0;
+    background-color: khaki;
+}
+
+header p {
+    margin: 0;
+    padding-left: 20px;
+}
+
+topbar, titlebar, searchbar, pagebar {
+    display: flex;
+    flex: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+titlebar {
+    border: 1px solid sienna;
+    padding-left: 20px;
+    border-radius: 5px;
+    margin-top: 5px
+}
+
+searchbar {
+    border-left: sienna 1px solid;
+    border-right: sienna 1px solid;
+    padding: 5px 5px 5px 0;
+    border-radius: 5px;
+}
+
+pagebar {
+    border-left: sienna 1px solid;
+    border-right: sienna 1px solid;
+    padding: 5px 5px 5px 0;
+    border-radius: 5px;
+}
+
+ul {
     display: flex;
     list-style: none;
+    margin: 0;
+    padding-left: 5px;
+    align-items: center;
 }
 
-ul.ingreso li a {
+li.menu {
+    padding: 5px 0px 5px 0px;
+    margin-right: 5px;
+    margin-left: 0px;
+}
+
+li.menu a {
+    color: sienna;
     text-decoration: none;
-    font-size: 12px;
-    padding: 0 0 0 20px;
-    color: #333;
+    background-color: transparent;
+}
+
+li.title a {
+    background-color: sienna;
+    color: white;
+    text-decoration: none;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+
+span.page {
+    padding: 5px 5px 5px 5px;
+    background-color: white;
+    color: sienna;
+    margin-right: 5px;
+    border-radius: 5px;
+    border: solid 1px sienna;
+}
+
+span#actual {
+    background-color: sienna;
+    color: white;
 }
 
 img {
     float: left;
-    margin: 0px 35px 0px 30px;
-    box-shadow: rgb(35, 92, 35) 5px 5px;
-    border: 1px solid green;
-    border-radius: 10%;
-    width: 140px;
-}
-
-h2 {
-    font-family: Arial, Helvetica, sans-serif font-size: larger;
-    text-align: left;
-    color: rgb(13, 13, 13);
-    padding: 0px 0px 0px 20px;
-    text-shadow: white 3px 3px;
-}
-
-nav {
-    background-color: rgba(18, 104, 7, 0.548);
-    padding: .5em;
-}
-
-nav ul {
-    margin: 0;
-    padding: 0 0 0 130px;
-    list-style: none;
-}
-
-nav ul li {
-    display: inline;
+    margin: 0px 30px 0px 10px;
 }
 
 a:hover {
@@ -60,11 +118,113 @@ a:hover {
 
 li:hover {
     background-color: khaki;
+    border-radius: 12px;
 }
 
-nav a {
+a {
     color: #fff;
     text-decoration: none;
     padding: .5em 1em;
     font-weight: bold;
+}
+
+/* cuerpo */
+
+main {
+    display: flex;
+    flex: auto;
+    flex-direction: column;
+}
+
+footer {
+    text-align: center;
+}
+
+/* formularios */
+
+.form-control {
+    padding: .375rem .75rem;
+    margin-bottom: 10px;
+}
+
+input:invalid {
+    border-color: red;
+}
+
+input:valid {
+    border-color: green;
+}
+
+label {
+    display: inline-block;
+    width: 80px;
+    text-align: right;
+    margin-right: 10px;
+}
+
+input, select {
+    outline: 0;
+    min-width: 150px;
+    line-height: 1.5;
+    border: 1px solid black;
+    border-radius: 0.25rem;
+}
+
+input {
+    height: 24px;
+}
+
+table {
+    border: 1px solid sienna;
+    border-radius: 5px;
+}
+
+select {
+    height: 28px;
+}
+
+.info {
+    margin: 2px 0 10px 145px;
+    visibility: hidden;
+}
+
+button[type="submit"] {
+    margin-left: 145px;
+}
+
+a.button {
+    display: inline-block;
+    text-decoration: none;
+    border: 1px solid black;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    width: 110px;
+}
+
+/* reportes */
+
+th {
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+button {
+    border-width: 1px;
+    width: auto;
+    height: 24px;
+    margin: 0 2px 0 0;
+    padding: 0 7px 0 7px;
+    color: black;
+}
+
+.btnrojo {
+    background-color: lightcoral;
+}
+
+.btnverde {
+    background-color: palegreen;
 }

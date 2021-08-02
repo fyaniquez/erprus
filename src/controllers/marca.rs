@@ -1,8 +1,10 @@
-//use super::*;
-
-use crate::handlers::caja::*;
-use crate::models::caja::Caja;
-use crate::views::caja::*;
+/// controller marca
+/// autor: fyaniquez
+/// fecha: 2021-07-12 19:22:46.428483952 -04:00
+///
+use crate::handlers::marca::*;
+use crate::models::marca::Marca;
+use crate::views::marca::*;
 use crate::State;
 use sqlx::PgPool;
 use tide::Request;
@@ -27,15 +29,19 @@ pub async fn ctrl_get(req: Request<State>) -> tide::Result {
     Ok(res)
 }
 
-pub async fn ctrl_new(mut _req: Request<State>) -> tide::Result {
+/// formulario para ingresar nuevo registro
+pub async fn ctrl_new(mut req: Request<State>) -> tide::Result {
+    let db_pool: PgPool = req.state().db_pool.clone();
     let errores = String::new();
     let res = view_new(errores).await.unwrap();
     Ok(res)
 }
+
+/// api para crear un registro con los datos enviados
 pub async fn ctrl_create(mut req: Request<State>) -> tide::Result {
     let db_pool: PgPool = req.state().db_pool.clone();
-    let caja: Caja = req.body_form().await?;
-    let res = match hndl_create(&db_pool, caja).await {
+    let parametros: Marca = req.body_form().await?;
+    let res = match hndl_create(&db_pool, parametros).await {
         Ok(row) => view_show(row).await.unwrap(),
         Err(err) => view_new(err.to_string()).await.unwrap(),
     };
@@ -43,6 +49,7 @@ pub async fn ctrl_create(mut req: Request<State>) -> tide::Result {
     Ok(res)
 }
 
+/// formulario para ingresar cambios en registro
 pub async fn ctrl_edit(req: Request<State>) -> tide::Result {
     let db_pool: PgPool = req.state().db_pool.clone();
     let id: i64 = (req.param("id").unwrap_or("0")).parse::<i64>().unwrap_or(0);
@@ -57,6 +64,7 @@ pub async fn ctrl_edit(req: Request<State>) -> tide::Result {
     Ok(res)
 }
 
+/// api para actualizar un registro con los datos enviados
 pub async fn ctrl_update(mut req: Request<State>) -> tide::Result {
     let mut errores = String::new();
     let db_pool: PgPool = req.state().db_pool.clone();
@@ -65,23 +73,25 @@ pub async fn ctrl_update(mut req: Request<State>) -> tide::Result {
         return ctrl_list(req).await;
     }
 
-    let mut caja: Caja = req.body_form().await?;
-    //valida_caja
+    let mut actualizado: Marca = req.body_form().await?;
     let row = hndl_get(&db_pool, id).await?;
     let res = match row {
         None => return ctrl_list(req).await,
         Some(row) => {
-            caja.activa = row.activa;
-            caja.sucursal_id = row.sucursal_id;
-            caja.created_at = row.created_at;
-            let resp = match hndl_update(&db_pool, &caja, id).await {
+            actualizado.id = row.id;
+            actualizado.nombre = row.nombre;
+            actualizado.fabrica_id = row.fabrica_id;
+            actualizado.created_at = row.created_at;
+            actualizado.updated_at = row.updated_at;
+
+            let resp = match hndl_update(&db_pool, &actualizado, id).await {
                 Ok(reg) => match reg {
                     None => ctrl_list(req).await,
                     Some(reg) => view_show(reg).await,
                 },
                 Err(err) => {
                     errores += &err.to_string();
-                    view_edit(&caja, id, errores).await
+                    view_edit(&actualizado, id, errores).await
                 }
             };
             resp
@@ -90,15 +100,21 @@ pub async fn ctrl_update(mut req: Request<State>) -> tide::Result {
     res
 }
 
+/// api para eliminar un registro
 pub async fn ctrl_delete(req: tide::Request<State>) -> tide::Result {
     let db_pool = req.state().db_pool.clone();
     let id: i64 = (req.param("id").unwrap_or("0")).parse::<i64>().unwrap_or(0);
 
     let _row = hndl_delete(&db_pool, id).await?;
     let res = ctrl_list(req).await.unwrap();
-    //let res = match row {
-    //    None => Response::new(404),
-    //    Some(_) => Response::new(204),
-    //};
+    Ok(res)
+}
+
+/// listar registros en formato json
+pub async fn ctrl_list_nombres_json(req: Request<State>) -> tide::Result {
+    let db_pool: PgPool = req.state().db_pool.clone();
+    let id: i64 = (req.param("id").unwrap_or("0")).parse::<i64>().unwrap_or(0);
+    let row = hndl_list_nombres_json(&db_pool, id).await?;
+    let res = view_list_nombres_json(row).await.unwrap();
     Ok(res)
 }
