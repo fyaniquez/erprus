@@ -3,7 +3,7 @@
 /// fecha: 2021-07-12 18:54:46.497438825 -04:00
 ///        
 use crate::models::capitulo::Capitulo;
-use crate::views::layout::page;
+use crate::views::layout::{page_form, page_list};
 use maud::html;
 use tide::http::mime;
 use tide::{convert::json, Body, Response};
@@ -12,8 +12,7 @@ use tide::{convert::json, Body, Response};
 pub async fn view_list(rows: Vec<Capitulo>) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let i = rows.into_iter();
-    let markup = page(
-        "lista",
+    let markup = page_form(
         "Lista capitulos",
         "capitulo",
         "capitulo.js",
@@ -66,8 +65,7 @@ pub async fn view_list(rows: Vec<Capitulo>) -> tide::Result {
 /// registro individual
 pub async fn view_show(row: Capitulo) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Mostrar Capitulo",
         "capitulo",
         "capitulo.js",
@@ -81,8 +79,7 @@ pub async fn view_show(row: Capitulo) -> tide::Result {
 /// formulario para ingresar nuevo registro
 pub async fn view_new(errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Nueva capitulo",
         "capitulo",
         "capitulo.js",
@@ -100,8 +97,7 @@ pub async fn view_new(errores: String) -> tide::Result {
 /// formulario para modificar registro
 pub async fn view_edit(capitulo: &Capitulo, id: i64, errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Editar cajero",
         "capitulo",
         "capitulo.js",

@@ -1,5 +1,5 @@
 use crate::models::producto::Producto;
-use crate::views::layout::{page, page_list};
+use crate::views::layout::{page_form, page_list};
 use maud::html;
 use tide::http::mime;
 use tide::{Body, Response};
@@ -73,8 +73,7 @@ pub async fn view_list(
 
 pub async fn view_show(row: Producto) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Mostrar Producto",
         "producto",
         "producto.js",
@@ -87,8 +86,7 @@ pub async fn view_show(row: Producto) -> tide::Result {
 
 pub async fn view_new(ta: TAuxiliares, errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Nuevo producto",
         "producto",
         "producto.js",
@@ -113,8 +111,7 @@ pub async fn view_edit(
     errores: String,
 ) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Editar producto",
         "producto",
         "producto.js",

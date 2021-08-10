@@ -1,5 +1,5 @@
 use crate::models::caja::Caja;
-use crate::views::layout::page;
+use crate::views::layout::{page_form, page_list};
 use maud::html;
 use tide::http::mime;
 use tide::{Body, Response};
@@ -7,8 +7,7 @@ use tide::{Body, Response};
 pub async fn view_list(rows: Vec<Caja>) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let i = rows.into_iter();
-    let markup = page(
-        "lista",
+    let markup = page_form(
         "Lista cajas",
         "caja",
         "caja.js",
@@ -58,22 +57,14 @@ pub async fn view_list(rows: Vec<Caja>) -> tide::Result {
 }
 pub async fn view_show(row: Caja) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
-        "Mostrar Caja",
-        "caja",
-        "caja.js",
-        "caja.css",
-        ver(row),
-    );
+    let markup = page_form("Mostrar Caja", "caja", "caja.js", "caja.css", ver(row));
     res.set_body(Body::from_string(markup.into_string()));
     Ok(res)
 }
 
 pub async fn view_new(errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Nueva caja",
         "caja",
         "caja.css",
@@ -86,8 +77,7 @@ pub async fn view_new(errores: String) -> tide::Result {
 
 pub async fn view_edit(caja: &Caja, id: i64, errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Editar caja",
         "caja",
         "caja.js",

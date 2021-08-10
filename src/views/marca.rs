@@ -3,7 +3,7 @@
 /// fecha: 2021-07-12 19:22:46.428610390 -04:00
 ///        
 use crate::models::marca::Marca;
-use crate::views::layout::page;
+use crate::views::layout::{page_form, page_list};
 use maud::html;
 use tide::http::mime;
 use tide::{Body, Response};
@@ -12,8 +12,7 @@ use tide::{Body, Response};
 pub async fn view_list(rows: Vec<Marca>) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let i = rows.into_iter();
-    let markup = page(
-        "lista",
+    let markup = page_form(
         "Lista marcas",
         "marca",
         "marca.js",
@@ -66,14 +65,7 @@ pub async fn view_list(rows: Vec<Marca>) -> tide::Result {
 /// registro individual
 pub async fn view_show(row: Marca) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
-        "Mostrar Marca",
-        "marca",
-        "marca.js",
-        "marca.css",
-        ver(row),
-    );
+    let markup = page_form("Mostrar Marca", "marca", "marca.js", "marca.css", ver(row));
     res.set_body(Body::from_string(markup.into_string()));
     Ok(res)
 }
@@ -81,8 +73,7 @@ pub async fn view_show(row: Marca) -> tide::Result {
 /// formulario para ingresar nuevo registro
 pub async fn view_new(errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Nueva marca",
         "marca",
         "marca.js",
@@ -96,8 +87,7 @@ pub async fn view_new(errores: String) -> tide::Result {
 /// formulario para modificar registro
 pub async fn view_edit(marca: &Marca, id: i64, errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Editar marca",
         "marca",
         "marca.js",

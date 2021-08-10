@@ -7,3 +7,5 @@ pub mod layout;
 pub mod marca;
 pub mod producto;
 pub mod unidad;
+pub mod vendido;
+pub mod venta;

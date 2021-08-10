@@ -2,7 +2,10 @@ use sqlx::{PgPool, Pool};
 use tide::http::mime;
 use tide::utils;
 use tide::{
-    http::cookies::SameSite, prelude::*, Middleware, Next, Request, Response, Server, StatusCode,
+    //http::cookies::SameSite, prelude::*, Middleware, Next, Request, Response, Server, StatusCode,
+    prelude::*,
+    Response,
+    Server,
 };
 
 mod controllers;
@@ -18,6 +21,7 @@ use controllers::empleado;
 use controllers::marca;
 use controllers::producto;
 use controllers::unidad;
+use controllers::venta;
 
 #[derive(Clone, Debug)]
 pub struct State {
@@ -136,5 +140,14 @@ async fn server(db_pool: PgPool) -> Server<State> {
 
     app.at("/erprus/unidades_nombres.json")
         .get(unidad::ctrl_list_nombres_json);
+
+    app.at("/erprus/ventas").post(venta::ctrl_create);
+    //app.at("/erprus/ventas/:id").post(venta::ctrl_update);
+    //app.at("/erprus/ventas/:id").delete(venta::ctrl_delete);
+    //app.at("/erprus/ventas").get(venta::ctrl_list);
+    //app.at("/erprus/ventas/:id").get(venta::ctrl_get);
+    app.at("/erprus/ventas/new").get(venta::ctrl_new);
+    //app.at("/erprus/ventas/:id/edit").get(venta::ctrl_edit);
+
     app
 }

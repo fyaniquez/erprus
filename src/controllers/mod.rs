@@ -6,3 +6,5 @@ pub mod empleado;
 pub mod marca;
 pub mod producto;
 pub mod unidad;
+pub mod vendido;
+pub mod venta;

@@ -3,7 +3,7 @@
 /// fecha: 2021-07-11 21:43:03.192786909 -04:00
 ///        
 use crate::models::categoria::Categoria;
-use crate::views::layout::page;
+use crate::views::layout::{page_form, page_list};
 use maud::html;
 use tide::http::mime;
 use tide::{Body, Response};
@@ -12,8 +12,7 @@ use tide::{Body, Response};
 pub async fn view_list(rows: Vec<Categoria>) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let i = rows.into_iter();
-    let markup = page(
-        "lista",
+    let markup = page_form(
         "Lista categorias",
         "categoria",
         "categoria.js",
@@ -66,8 +65,7 @@ pub async fn view_list(rows: Vec<Categoria>) -> tide::Result {
 /// registro individual
 pub async fn view_show(row: Categoria) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Mostrar Categoria",
         "categoria",
         "categoria.js",
@@ -81,8 +79,7 @@ pub async fn view_show(row: Categoria) -> tide::Result {
 /// formulario para ingresar nuevo registro
 pub async fn view_new(errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Nueva categoria",
         "categoria",
         "categoria.js",
@@ -100,8 +97,7 @@ pub async fn view_new(errores: String) -> tide::Result {
 /// formulario para modificar registro
 pub async fn view_edit(categoria: &Categoria, id: i64, errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
-    let markup = page(
-        "formulario",
+    let markup = page_form(
         "Editar categoría",
         "categoria",
         "categoria.js",

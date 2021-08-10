@@ -150,8 +150,7 @@ fn subfooter_list(nro_registros: i64, paginas: i64, pagina: i64, tomos: i64) -> 
 /// Layout para página genéria incluye `header` y `footer`.
 ///
 /// El contenido va en el body mas el footer
-pub fn page(
-    tipo: &str,
+pub fn page_form(
     title: &str,
     objeto: &str,
     script: &str,
@@ -170,6 +169,30 @@ pub fn page(
             body {
                 (header(opciones))
                 (main_form(title, objeto, contenido))
+                (footer())
+            }
+        }
+    }
+}
+pub fn page_maestro_detalle(
+    title: &str,
+    objeto: &str,
+    script: &str,
+    style: &str,
+    contenido_maestro: Markup,
+) -> Markup {
+    let opciones = vec![
+        ("/erprus/productos", "Productos"),
+        ("/erprus/ventas", "Ventas"),
+        ("/erprus/compras", "Compras"),
+    ];
+    html! {
+        (DOCTYPE)
+        html {
+            (head(title, script, style))
+            body {
+                (header(opciones))
+                (main_form(title, objeto, contenido_maestro))
                 (footer())
             }
         }
