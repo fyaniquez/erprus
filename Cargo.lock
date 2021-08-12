@@ -685,12 +685,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "data-encoding"
-version = "2.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ee2393c4a91429dffb4bedf19f4d6abf27d8a732c8ce4980305d782e5426d57"
-
-[[package]]
 name = "digest"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -753,11 +747,12 @@ dependencies = [
  "async-std",
  "chrono",
  "dotenv",
+ "http-types",
  "maud",
  "oauth2",
  "serde",
  "serde_json",
- "serde_qs 0.8.4",
+ "serde_qs",
  "sqlx",
  "surf",
  "tide",
@@ -1127,9 +1122,9 @@ dependencies = [
 
 [[package]]
 name = "http-types"
-version = "2.11.1"
+version = "2.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad077d89137cd3debdce53c66714dc536525ef43fe075d41ddc0a8ac11f85957"
+checksum = "6e9b187a72d63adbfba487f48095306ac823049cb504ee195541e91c7775f5ad"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -1142,7 +1137,7 @@ dependencies = [
  "rand 0.7.3",
  "serde",
  "serde_json",
- "serde_qs 0.7.2",
+ "serde_qs",
  "serde_urlencoded",
  "url",
 ]
@@ -1983,18 +1978,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "42f6109f0506e20f7e0f910e51a0079acf41da8e0694e6442527c4ddf5a2b158"
 dependencies = [
  "serde",
-]
-
-[[package]]
-name = "serde_qs"
-version = "0.7.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5af82de3c6549b001bec34961ff2d6a54339a87bab37ce901b693401f27de6cb"
-dependencies = [
- "data-encoding",
- "percent-encoding",
- "serde",
- "thiserror",
 ]
 
 [[package]]

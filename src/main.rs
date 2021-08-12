@@ -19,6 +19,7 @@ use controllers::capitulo;
 use controllers::categoria;
 use controllers::empleado;
 use controllers::marca;
+use controllers::precio;
 use controllers::producto;
 use controllers::unidad;
 use controllers::venta;
@@ -109,6 +110,9 @@ async fn server(db_pool: PgPool) -> Server<State> {
     app.at("/erprus/productos/new").get(producto::ctrl_new);
     app.at("/erprus/productos/:id/edit")
         .get(producto::ctrl_edit);
+
+    app.at("/erprus/precios").get(precio::ctrl_list);
+    app.at("/erprus/precios/:id").get(precio::ctrl_get);
 
     app.at("/erprus/capitulos").post(capitulo::ctrl_create);
     app.at("/erprus/capitulos/:id").post(capitulo::ctrl_update);

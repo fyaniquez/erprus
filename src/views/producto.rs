@@ -71,7 +71,13 @@ pub async fn view_list(
     Ok(res)
 }
 
-pub async fn view_show(row: Producto) -> tide::Result {
+pub async fn view_list_json(row: String) -> tide::Result {
+    let mut res = Response::builder(200).content_type(mime::HTML).build();
+    res.set_body(Body::from_string(row));
+    Ok(res)
+}
+
+pub async fn view_get_form(row: Producto) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let markup = page_form(
         "Mostrar Producto",
@@ -83,7 +89,11 @@ pub async fn view_show(row: Producto) -> tide::Result {
     res.set_body(Body::from_string(markup.into_string()));
     Ok(res)
 }
-
+pub async fn view_get_json(row: String) -> tide::Result {
+    let mut res = Response::builder(200).content_type(mime::HTML).build();
+    res.set_body(Body::from_string(row));
+    Ok(res)
+}
 pub async fn view_new(ta: TAuxiliares, errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let markup = page_form(

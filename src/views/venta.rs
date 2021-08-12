@@ -14,7 +14,7 @@ pub async fn view_new(errores: String) -> tide::Result {
     let markup = page_maestro_detalle(
         "Nueva venta",
         "venta",
-        "venta.js",
+        "venta_form.js",
         "venta.css",
         formulario_maestro(String::from("/erprus/ventas"), &Venta::new(), errores),
     );
@@ -28,7 +28,7 @@ pub async fn view_edit(errores: String) -> tide::Result {
     let markup = page_maestro_detalle(
         "Nueva venta",
         "venta",
-        "venta.js",
+        "venta_form.js",
         "venta.css",
         formulario_maestro(String::from("/erprus/ventas"), &Venta::new(), errores),
     );
@@ -62,7 +62,10 @@ pub fn formulario_maestro(accion: String, row: &Venta, errores: String) -> maud:
             }
             (crate::views::vendido::formulario_detalle())
             button class="btnverde" type="submit" {"Grabar"}
-            button class="btnrojo" type="button" {"Cancelar"}
+            button class="btnrojo" type="button" {"Borrar"}
+        }
+        .modal#search {
+            ul#tsearch;
         }
     )
 }

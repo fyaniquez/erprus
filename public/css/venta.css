@@ -1,1 +1,4 @@
 @import "layout.css";
+ul#tsearch {
+    display: block;
+}

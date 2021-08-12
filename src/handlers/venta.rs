@@ -23,26 +23,27 @@ WHERE id = $1
     .map_err(|e| Error::new(409, e))?;
     Ok(row)
 }
+// todo: hacer que si hay un error muestre el contenido que lo provocó
 pub async fn hndl_create(
     db_pool: &PgPool,
     venta: Venta,
     vendidos: Vec<Vendido>,
 ) -> tide::Result<Venta> {
-    let mut errores = String::new();
     // inicia la transaccion
     let mut tx = db_pool.begin().await?;
-    let venta: Venta = hndl_create_tran(&mut tx, venta).await.unwrap();
+    let venta: Venta = hndl_create_tran(&mut tx, venta).await?;
     for i in 0..vendidos.len() {
         let resv = match crate::handlers::vendido::hndl_create_tran(&mut tx, venta.id, &vendidos[i])
             .await
         {
             Ok(_row) => (),
-            Err(err) => (errores.push_str(&err.to_string())),
+            Err(err) => return Err(err),
         };
     }
     tx.commit().await?;
     Ok(venta)
 }
+
 /// Crear un registro nuevo
 pub async fn hndl_create_tran<'a>(
     db: &mut Transaction<'_, Postgres>,

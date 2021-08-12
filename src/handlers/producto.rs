@@ -2,7 +2,7 @@ use crate::models::producto::Producto;
 use sqlx::{query, query_as, PgPool};
 use tide::Error;
 
-pub async fn hndl_list(
+pub async fn hndl_list_form(
     db_pool: &PgPool,
     filtro: &str,
     longitud: &str,
@@ -34,8 +34,40 @@ pub async fn hndl_list(
     Ok(rows)
 }
 
+pub async fn hndl_list_json(
+    db_pool: &PgPool,
+    filtro: &str,
+    longitud: &str,
+    pagina: i64,
+) -> tide::Result<String> {
+    let mut longitud_str = String::new();
+    let long = get_longitud(longitud);
+    if longitud != "todos" {
+        longitud_str += &format!("LIMIT {} OFFSET {}", longitud, (pagina - 1) * long);
+    };
+    let mut filtro_str = String::from("WHERE activo");
+    if filtro != "" {
+        filtro_str += &format!(" AND nombre ILIKE '%{}%'", filtro);
+    }
+    let query: &str = &format!(
+        r#"
+SELECT cast(json_agg(filas) as text)
+FROM (
+    SELECT id, nombre, descripcion, activo, created_at, updated_at, categoria_id, marca_id, unidad_id, barras, contenido, caracteristicas, fraccionable, cantidad
+    FROM productos
+    {}
+    ORDER BY nombre
+    {}
+) filas
+        "#,
+        filtro_str, longitud_str
+    );
+    let rows: (String,) = sqlx::query_as(query).fetch_one(db_pool).await?;
+    Ok(rows.0)
+}
+
 /// Obtener un registros de acuerdo a su id
-pub async fn hndl_get(db_pool: &PgPool, id: i64) -> tide::Result<Option<Producto>> {
+pub async fn hndl_get_form(db_pool: &PgPool, id: i64) -> tide::Result<Option<Producto>> {
     let row = sqlx::query_as!(
         Producto,
         r#"
@@ -50,7 +82,23 @@ WHERE id = $1
     .map_err(|e| Error::new(409, e))?;
     Ok(row)
 }
-
+/// Obtener un registros de acuerdo a su id
+pub async fn hndl_get_json(db_pool: &PgPool, id: i64) -> tide::Result<String> {
+    let row: (String,) = sqlx::query_as(
+        r#"
+SELECT cast(json_agg(filas) as text)
+FROM (
+SELECT id, nombre, descripcion, activo, categoria_id, marca_id, created_at, updated_at, unidad_id, barras, contenido, caracteristicas, fraccionable, cantidad
+FROM productos
+WHERE id = $1
+) filas
+        "#,
+    )
+    .bind(id)
+    .fetch_one(db_pool)
+    .await?;
+    Ok(row.0)
+}
 /// Crear un registro nuevo
 pub async fn hndl_create(db_pool: &PgPool, estructura: Producto) -> tide::Result<Producto> {
     let row: Producto = query_as!(

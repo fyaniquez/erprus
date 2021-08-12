@@ -23,6 +23,9 @@ pub async fn ctrl_new(mut req: Request<State>) -> tide::Result {
 }
 
 /// api para crear un registro con los datos enviados
+/// todo: hacer que si hay error muestre el contenido que lo provocó (view edit)
+/// todo: debe mostrar el url correcto (muestra erprus/ventas no erprus/ventas/new)
+/// todo: debe implementar una politica de manejo de errores (ver from zero 2 prod rust)
 pub async fn ctrl_create(mut req: Request<State>) -> tide::Result {
     let db_pool: PgPool = req.state().db_pool.clone();
     // descartado temporalmente hasta saber como interpretar los corchetes codificados
