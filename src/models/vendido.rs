@@ -20,18 +20,6 @@ pub struct Vendido {
 }
 
 impl Vendido {
-    pub fn new() -> Vendido {
-        Vendido {
-            id: 0,
-            cantidad: 0,
-            precio: 0,
-            subtotal: 0,
-            producto_id: 0,
-            venta_id: 0,
-            created_at: Utc::now().naive_utc(),
-            updated_at: Utc::now().naive_utc(),
-        }
-    }
     pub fn from_parametros_form(venta: &ParametrosForm, i: usize) -> Vendido {
         Vendido {
             id: 0,

@@ -7,6 +7,7 @@ use maud::{html, Markup};
 /// lista de registros en la tabla
 pub fn formulario_detalle() -> Markup {
     html! {
+    .detform {
         table#detform {
             tr {
                 th { "id"}
@@ -16,7 +17,7 @@ pub fn formulario_detalle() -> Markup {
                 th { "subtotal"}
                 th { img src="/public/img/gear.png"; }
             }
-            tr {
+            tr#detalle_0 {
                 td { input type="text" name="producto_id[0]" id="producto_id_0"; }
                 td { input type="text" id="nombre_0"; }
                 td { input type="text" name="cantidad[0]" id="cantidad_0"; }
@@ -28,5 +29,10 @@ pub fn formulario_detalle() -> Markup {
                 }
             }
         }
+        button#agregar class="btnverde" type="button" {"Agregar producto"}
+        .modal#search {
+            ul#tsearch;
+        }
     }
+        }
 }

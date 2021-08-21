@@ -1,8 +1,8 @@
-/// view venta
+/// view compra
 /// autor: fyaniquez
 /// fecha: 2021-08-02 23:02:06.537351881 -04:00
 ///        
-use crate::models::venta::Venta;
+use crate::models::compra::Compra;
 use crate::views::layout::page_maestro_detalle;
 use maud::html;
 use tide::http::mime;
@@ -12,11 +12,11 @@ use tide::{Body, Response};
 pub async fn view_new(errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let markup = page_maestro_detalle(
-        "Nueva venta",
-        "venta",
-        "venta_form.js",
-        "venta.css",
-        formulario_maestro(String::from("/erprus/ventas"), &Venta::new(), errores),
+        "Nueva compra",
+        "compra",
+        "compra_form.js",
+        "compra.css",
+        formulario_maestro(String::from("/erprus/compras"), &Compra::new(), errores),
     );
     res.set_body(Body::from_string(markup.into_string()));
     Ok(res)
@@ -26,18 +26,18 @@ pub async fn view_new(errores: String) -> tide::Result {
 pub async fn view_edit(errores: String) -> tide::Result {
     let mut res = Response::builder(200).content_type(mime::HTML).build();
     let markup = page_maestro_detalle(
-        "Nueva venta",
-        "venta",
-        "venta_form.js",
-        "venta.css",
-        formulario_maestro(String::from("/erprus/ventas"), &Venta::new(), errores),
+        "Nueva compra",
+        "compra",
+        "compra_form.js",
+        "compra.css",
+        formulario_maestro(String::from("/erprus/compras"), &Compra::new(), errores),
     );
     res.set_body(Body::from_string(markup.into_string()));
     Ok(res)
 }
 
 /// Construir un formulario con los campos de la tabla
-pub fn formulario_maestro(accion: String, row: &Venta, errores: String) -> maud::Markup {
+pub fn formulario_maestro(accion: String, row: &Compra, errores: String) -> maud::Markup {
     html!(
         @if errores.len() > 0 {
             p {
@@ -56,9 +56,24 @@ pub fn formulario_maestro(accion: String, row: &Venta, errores: String) -> maud:
                     required placeholder="pago";
             }
             .form-control {
-                label for="cliente_id" {"cliente_id"};
-                input type="text" name="cliente_id" id="cliente_id" value=(row.cliente_id.to_string())
-                    required placeholder="cliente_id";
+                label for="factura" {"factura"};
+                input type="text" name="factura" id="factura" value=(row.factura.to_string())
+                    required placeholder="factura";
+            }
+            .form-control {
+                label for="numero" {"numero"};
+                input type="text" name="numero" id="numero" value=(row.numero)
+                    required placeholder="numero";
+            }
+            .form-control {
+                label for="observaciones" {"observaciones"};
+                input type="text" name="observaciones" id="observaciones" value=(row.observaciones)
+                    required placeholder="observaciones";
+            }
+            .form-control {
+                label for="distribuidora_id" {"distribuidora_id"};
+                input type="text" name="distribuidora_id" id="distribuidora_id" value=(row.distribuidora_id.to_string())
+                    required placeholder="distribuidora_id";
             }
             (crate::views::vendido::formulario_detalle())
             button class="btnverde" type="submit" {"Grabar"}

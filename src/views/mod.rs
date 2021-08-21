@@ -2,6 +2,7 @@ pub mod caja;
 pub mod cajero;
 pub mod capitulo;
 pub mod categoria;
+pub mod compra;
 pub mod empleado;
 pub mod layout;
 pub mod marca;

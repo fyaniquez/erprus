@@ -35,7 +35,7 @@ impl Venta {
             updated_at: Utc::now().naive_utc(),
         }
     }
-    pub fn fromParametrosForm(parametros: &ParametrosForm) -> Venta {
+    pub fn from_parametros_form(parametros: &ParametrosForm) -> Venta {
         Venta {
             id: 0,
             fecha: Utc::now().naive_utc(),
